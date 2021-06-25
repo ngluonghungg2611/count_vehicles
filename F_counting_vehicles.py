@@ -1,4 +1,4 @@
-from main import CLASSES, CONFIDENCE_SETTING, MAX_DISTANCE, YOLOV3_CFG, YOLOV3_HEIGHT, YOLOV3_WEIGHT, YOLOV3_WIDTH, check_location, check_start_line, detections_yolo3, draw_prediction
+from main import CLASSES, CONFIDENCE_SETTING, END_POINT, MAX_DISTANCE, START_POINT, YOLOV3_CFG, YOLOV3_HEIGHT, YOLOV3_WEIGHT, YOLOV3_WIDTH, check_location, check_start_line, detections_yolo3, draw_prediction
 import numpy as np 
 import cv2
 import math
@@ -83,4 +83,26 @@ def counting_vehicle(video_input, video_output, skip_frame=1):
                         }       
                         list_object.append(new_object)
                         #Draw new object 
+                        draw_prediction(CLASSES, colors, frame, new_object['id'], new_object['confidence'], box_x, box_x, box_width, box_height)
+        # Put sumarytext
+        cv2.putText(frame, "Number: {:3d}".format(number_vehicle), (10,30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,255,0), 2)
+        
+        # Draw start line
+        cv2.line(frame, (0, START_POINT), (width, START_POINT), (204,90,208), 1)
+        
+        # Draw end line
+        cv2.line(frame, (0, height - END_POINT), (width, height - END_POINT), (255,0,0), 2)
+        
+        # Show frame
+        cv2.imshow("Counting", frame) 
+        key = cv2.waitKey(1) & 0xFF
+        if key == ord('q'):
+            break
+        out.write(frame)
+    cap.release()
+    out.release()
+    cv2.destroyAllWindows()
+if __name__ == '__main__':
+    counting_vehicle('highway.mp4', 'vehicles.avi')
+    
                         
